@@ -6,12 +6,13 @@ import './photo.scss'
 // const photoImages = [photo]
 interface typeProps {
   photoImages: Array<string>,
-  
+  photoNow: number,
+  photoVisible: boolean,
+  onClose():any,
 }
 
 function ImageView(props: typeProps) {
-  const [visible, setVisible] = React.useState(false);
-  const [photoIndex, setPhotoIndex] = React.useState(0);
+  const [photoIndex, setPhotoIndex] = React.useState(props.photoNow);
   
   const child = (
     <div>
@@ -23,8 +24,8 @@ function ImageView(props: typeProps) {
     <div>
       <PhotoSlider
         images={props.photoImages.map(item => ({ src: item, intro: child }))}
-        visible={visible}
-        onClose={() => setVisible(false)}
+        visible={props.photoVisible}
+        onClose={props.onClose}
         index={photoIndex}
         onIndexChange={setPhotoIndex}
       />
