@@ -1,7 +1,7 @@
 import React from 'react'
 import { PhotoSlider } from 'react-photo-view'
 import 'react-photo-view/dist/index.css'
-import './photo.scss'
+import './photo.module.scss'
 // import photo from '../../color.png'
 // const photoImages = [photo]
 interface typeProps {
