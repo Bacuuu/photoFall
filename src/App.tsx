@@ -34,8 +34,11 @@ function App() {
     setHeightArray(heightNow);
   }
 
-  function whichColToIns(heightArray:number[]) {
-    
+  /**
+   * 计算将图片插入哪个列
+   */
+  function whichColToIns() {
+    return heightArray.indexOf(Math.min(...heightArray))
   }
 
   // resize回调函数
