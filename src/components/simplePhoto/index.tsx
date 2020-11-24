@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useRef } from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import styles from './photo.module.scss'
 interface typeProps {
   photo: string,
@@ -9,10 +9,9 @@ interface typeProps {
 }
 
 function SimplePhoto(props: typeProps) {
-  const myRef = useRef(null)
   return (
     <div onClick={props.onClick} className={`${styles['simple-photo']} ` +  styles[`width-${props.howManyPerRow}`] +' '+ styles[`left-${props.howManyPerRow}-${props.whichColumn}`]} >
-      <img className={styles.photo} ref={myRef} onLoad={props.getHeight} src={props.photo} alt=""/>
+      <img className={styles.photo} onLoad={props.getHeight} src={props.photo} alt=""/>
     </div>
   )
 }
