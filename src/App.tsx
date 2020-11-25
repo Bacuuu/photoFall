@@ -4,10 +4,18 @@ import './App.css';
 import PhotoView from './components/PhotoView'
 import SimplePhoto from './components/simplePhoto'
 import photo from './color.png'
+import { apiGetImage } from './api/getImage'
+import { getLineAndCharacterOfPosition } from 'typescript';
 
 interface Iphoto {
   index: number,
   link: string,
+  intro: string,
+}
+
+interface photoApiData {
+  link: string,
+  name: string,
   intro: string,
 }
 
@@ -30,7 +38,7 @@ function App() {
    */
   function addToHeight(whichColumn:number, height: number) {
     const heightNow = heightArray;
-    heightNow[whichColumn] += height;
+    heightNow[whichColumn - 1] += height;
     setHeightArray(heightNow);
   }
 
@@ -38,7 +46,24 @@ function App() {
    * 计算将图片插入哪个列
    */
   function whichColToIns() {
-    return heightArray.indexOf(Math.min(...heightArray))
+    console.log(heightArray)
+    return heightArray.indexOf(Math.min(...heightArray)) + 1
+  }
+
+  /**
+   * 获取图片并做后续操作,photoArray,whichColToIns
+   */
+  async function getImages () {
+    const data:photoApiData[] = (await apiGetImage()).data.data
+    // const photoList:Iphoto[] = [];
+    data.forEach(i => {
+      setPhotoArray(state => [...state, {
+        index: state.length + 1,
+        link: i.link,
+        intro: i.intro
+      }])
+    })
+    // setPhotoArray(photoList)
   }
 
   // resize回调函数
@@ -67,6 +92,7 @@ function App() {
 
   // preview
   function handlePreview () {
+    console.log(photoArray, heightArray)
     setPreview(true)
   }
 
@@ -76,12 +102,15 @@ function App() {
   }
   // 获取单张图片的naturalHeight
   function getSimpleHeight (e:BaseSyntheticEvent) {
-    // console.log(e)
+    addToHeight(whichColToIns(), e.target.naturalHeight)
   }
 
 
   // 初始化，页面自适应 
   useEffect(() => {
+    setInterval(() => {
+      getImages()
+    }, 10000);
     const width = window.innerWidth;
     if ( width > 1500) {
       setPerRow(4);
@@ -102,27 +131,22 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* {
+        {
           photoArray.map(i => {
             return (
               <SimplePhoto
-              photo={photo}
+              key={i.index}
+              photo={i.link}
               howManyPerRow={howmanyPerRow}
               onClick={handlePreview}
               getHeight={getSimpleHeight}
-              whichColumn={1}/>
+              whichColumn={whichColToIns()}/>
             )
           })
-        } */}
-        <SimplePhoto
-        photo={photo}
-        howManyPerRow={howmanyPerRow}
-        onClick={handlePreview}
-        getHeight={getSimpleHeight}
-        whichColumn={1}/>
+        }
 
         <PhotoView
-          photoImages={[photo, photo, photo]}
+          photoImages={photoArray.map(v => v.link)}
           photoNow={0}
           photoVisible={photoPreview}
           onClose={cancelPreview}
